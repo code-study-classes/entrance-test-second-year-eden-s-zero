@@ -90,4 +90,54 @@ const payers = [
     { id: 1, name: 'Ivan Ivanov Ivanovich', payerType: 'individual' },
     { id: 2, name: 'OOO "Company"', payerType: 'legal entity' }
 ];
+
 const bookings = [];
+
+function bookRoom(roomId, payerId, guestIds, hotelId, checkInDate, checkOutDate) {
+    const room = rooms.find(r => r.id === roomId && r.status === "Free");
+    const payer = payers.find(p => p.id === payerId);
+    const hotel = hotels.find(h => h.id === hotelId);
+    
+    if (!room) {
+      console.log("Room not found or busy.");
+      return;
+    }
+    if (!payer || !hotel) {
+      console.log("Wrong payer or hotel.");
+      return;
+    }
+    
+    room.status = "Busy";
+    
+    const booking = {
+      id: bookings.length + 1,
+      roomId: roomId,
+      payer: payer,
+      guests: guestIds.map(guestId => guests.find(guest => guest.id === guestId)),
+      hotel: hotel,
+      bookingDate: new Date(),
+      checkInDate: new Date(checkInDate),
+      checkOutDate: new Date(checkOutDate)
+    };
+    
+    bookings.push(booking);
+    console.log(`Room ${room.number} Booked.`);
+}
+
+function testBooking() {
+    console.log('Test 1: booking room in hotel 1');
+
+    bookRoom(1, 1, [1, 2], 1, '2024-09-15', '2024-09-20');
+
+    console.log('Status room 101:', rooms.find(r => r.id === 1).status);
+
+    console.log('Test 2: Booking room in hotel 2');
+
+    bookRoom(11, 2, [3, 4], 2, '2024-09-22', '2024-09-25');
+
+    console.log('Status room 201:', rooms.find(r => r.id === 11).status);
+    
+    console.log('Current bookings', bookings);
+}
+
+testBooking();
